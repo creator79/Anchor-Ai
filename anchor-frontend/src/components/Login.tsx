@@ -1,8 +1,8 @@
-import * as React from "react";
+
 import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
 
-export function Login(props) {
+export function Login() {
   return (
     <div className="bg-white bg-opacity-10 self-center flex w-[387px] max-w-full flex-col items-center mt-20 mb-16 pl-16 pr-12 py-12 rounded-xl max-md:my-10 max-md:px-5">
       <img

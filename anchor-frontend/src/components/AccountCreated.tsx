@@ -1,12 +1,12 @@
-import * as React from "react";
+
 import  Arrow from "../assets/Arrow.svg";
 import  Account from "../assets/Account.svg";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
-export function AccountCreated (props) {
+export function AccountCreated () {
     const navigate = useNavigate();
 
-    const handleNavigate = (e) => {
+    const handleNavigate = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     navigate("/dashboard");
 
