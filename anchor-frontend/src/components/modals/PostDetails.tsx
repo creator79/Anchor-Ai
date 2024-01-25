@@ -65,7 +65,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
         throw new Error("User ID not found in session storage");
       }
 
-      const response = await fetch("http://localhost:8000/post/add-comment", {
+      const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/post/add-comment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +86,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
 
       // Fetch updated post data after adding comment
       const updatedPostResponse = await fetch(
-        `http://localhost:8000/post/getpost/${postId}`
+        `${import.meta.env.VITE_PORT_NAME}/post/getpost/${postId}`
       );
       if (!updatedPostResponse.ok) {
         throw new Error("Failed to fetch updated post data");
@@ -121,7 +121,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
         throw new Error("User ID not found in session storage");
       }
 
-      const response = await fetch("http://localhost:8000/post/add-reply", {
+      const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/post/add-reply`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,7 +143,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
 
       // Fetch updated post data after adding reply
       const updatedPostResponse = await fetch(
-        `http://localhost:8000/post/getReply/${commentId}`
+        `${import.meta.env.VITE_PORT_NAME}/post/getReply/${commentId}`
       );
       if (!updatedPostResponse.ok) {
         throw new Error("Failed to fetch updated post data");

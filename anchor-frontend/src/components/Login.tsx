@@ -11,7 +11,7 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/auth/login", {
+      const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
