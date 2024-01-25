@@ -1,5 +1,5 @@
 // App.js
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
@@ -8,6 +8,12 @@ import SignUp from './components/SignUp';
 import AccountCreated from './components/AccountCreated';
 import Otp from './components/Otp';
 import DashBoard from './components/Dashboard';
+import { ReactNode } from 'react';
+
+
+interface ProtectedRouteProps {
+  element: ReactNode;
+}
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,8 +26,8 @@ function App() {
       setIsLoggedIn(false);
     }
   }, []);
-
-  const ProtectedRoute = ({ element, ...props }) => {
+  const ProtectedRoute = ({ element }: ProtectedRouteProps) => {
+    // rest of your code...
     return isLoggedIn ? element : <Navigate to="/" />;
   };
 

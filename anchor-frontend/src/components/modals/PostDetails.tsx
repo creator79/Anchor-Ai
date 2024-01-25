@@ -6,6 +6,7 @@ interface Post {
   title: string;
   desc: string;
   comments?: Comment[];
+  replies?: Reply[];
 }
 
 interface Comment {
@@ -94,7 +95,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
       const updatedPost: Post = await updatedPostResponse.json();
 
       // Map comments data to the expected format
-      const commentsData: Comment[] = updatedPost.comments.map(
+      const commentsData: Comment[] = (updatedPost.comments ?? []).map(
         (comment: any) => ({
           _id: comment._id,
           text: comment.text,
@@ -187,7 +188,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
     //     ]
     // }
       // Map replies data to the expected format
-      const repliesData: Reply[] = updatedPost.replies.map((reply: any) => ({
+      const repliesData: Reply[] = (updatedPost.replies ?? []).map((reply: any) => ({
         _id: reply._id,
         text: reply.text,
         username: reply.user.username,

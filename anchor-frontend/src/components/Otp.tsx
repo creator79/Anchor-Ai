@@ -1,11 +1,11 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import  { useState, ChangeEvent, FormEvent } from "react";
 import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
 import { useNavigate } from "react-router-dom";
 
-interface OtpProps {}
 
-export default function Otp(props: OtpProps) {
+
+export default function Otp() {
   const navigate = useNavigate();
   const [otp, setOtp] = useState<string>("");
   const [error, setError] = useState<string | null>(null);

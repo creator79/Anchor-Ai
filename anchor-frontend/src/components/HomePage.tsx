@@ -1,9 +1,9 @@
-import * as React from "react";
+
 import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function HomePage(props) {
+export default function HomePage() {
   const navigate = useNavigate();
 
   const handleClick = () => {

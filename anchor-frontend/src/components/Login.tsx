@@ -36,7 +36,7 @@ const Login: React.FC = () => {
         console.error("Error:", response.statusText);
       }
     } catch (error) {
-      console.error("Error:", error.message);
+      console.error("Error:", (error as Error).message);
     }
   };
 

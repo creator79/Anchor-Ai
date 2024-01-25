@@ -2,18 +2,13 @@ import React, { useState } from "react";
 import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
 import { useNavigate } from "react-router-dom";
-import Header from "./Header";
-
-interface SignUpProps {
-  // Define your prop types if needed
-}
 
 interface UserData {
   username: string;
   email: string;
 }
 
-export default function SignUp(props: SignUpProps) {
+export default function SignUp() {
   const [formData, setFormData] = useState<UserData>({
     username: "",
     email: "",
@@ -33,13 +28,16 @@ export default function SignUp(props: SignUpProps) {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_PORT_NAME}/auth/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         // Handle non-successful responses here
@@ -63,9 +61,9 @@ export default function SignUp(props: SignUpProps) {
       navigate("/otp");
     } catch (error) {
       // Handle errors here
-      console.error("Error:", error.message);
+      console.error("Error:", error as Error);
     }
-};
+  };
 
   // console.log(formData.email)
   return (
@@ -112,7 +110,6 @@ export default function SignUp(props: SignUpProps) {
           className="aspect-[1.21] object-contain object-center w-[17px] stroke-[2px] stroke-white overflow-hidden self-stretch shrink-0 max-w-full"
         />
       </div>
-      
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React ,{useState} from "react";
+import  {useState} from "react";
 import Add from "../assets/Add.svg";
 import CreatePost from "./modals/CreatePost";
 import AllPost from "./modals/AllPost";
