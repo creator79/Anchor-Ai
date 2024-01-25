@@ -47,6 +47,24 @@ export const signup = async (req, res) => {
   }
 };
 
+export const login = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const userExists = await User.findOne({ email });
+
+    if (!userExists) {
+      return res.status(404).json({ success: false, message: 'Email not found' });
+    }
+
+    return res.status(200).json({ success: true, message: 'Email found' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 export const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;

@@ -15,7 +15,7 @@ export default function Otp(props: OtpProps) {
     e.preventDefault();
 
     const email = sessionStorage.getItem("email");
-    console.log(email, otp);
+    // console.log(email, otp);
 
     try {
       // Validate OTP format (you can add your validation logic here)

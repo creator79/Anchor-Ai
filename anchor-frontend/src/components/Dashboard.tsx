@@ -3,7 +3,7 @@ import Add from "../assets/Add.svg";
 import CreatePost from "./modals/CreatePost";
 import AllPost from "./modals/AllPost";
 
-export function DashBoard() {
+export default function DashBoard() {
   const [selectedModal, setSelectedModal] = useState<string | null>(null);
 
   const handleAllPost = async (e: { preventDefault: () => void }) => {

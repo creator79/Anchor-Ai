@@ -3,12 +3,12 @@ import  Arrow from "../assets/Arrow.svg";
 import  Account from "../assets/Account.svg";
 import {  useNavigate } from "react-router-dom";
 
-export function AccountCreated () {
+export default function AccountCreated () {
     const navigate = useNavigate();
 
     const handleNavigate = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    navigate("/dashboard");
+    navigate("/login");
 
     }
   return (

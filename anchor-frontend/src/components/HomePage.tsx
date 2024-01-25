@@ -3,7 +3,7 @@ import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
 import { Link, useNavigate } from "react-router-dom";
 
-export function HomePage(props) {
+export default function HomePage(props) {
   const navigate = useNavigate();
 
   const handleClick = () => {

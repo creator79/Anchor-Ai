@@ -1,8 +1,45 @@
-
+import React, { FormEvent, useState } from "react";
 import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
+import { useNavigate } from "react-router-dom";
 
-export function Login() {
+const Login: React.FC = () => {
+  const [email, setEmail] = useState<string>(""); // Fixing type issue
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.success) {
+          console.log(data.message);
+          sessionStorage.setItem("token", "true");
+          // Navigate to dashboard if email is found
+          // window.location.reload();
+          navigate("/dashboard");
+        } else {
+          console.error(data.message); // Display error message
+          sessionStorage.setItem("token", "false");
+        }
+      } else {
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
+
   return (
     <div className="bg-white bg-opacity-10 self-center flex w-[387px] max-w-full flex-col items-center mt-20 mb-16 pl-16 pr-12 py-12 rounded-xl max-md:my-10 max-md:px-5">
       <img
@@ -17,13 +54,15 @@ export function Login() {
         <input
           type="text"
           placeholder="Enter Your Email"
+          value={email} // Fixing where email is set from UI
+          onChange={(e) => setEmail(e.target.value)} // Fixing types and eslint issues
           style={{ color: "white" }}
-          className=" text-white text-opacity-50 text-base whitespace-nowrap border self-stretch justify-center mt-14 pl-10 pr-16 py-5 rounded-[1000px] border-solid border-white items-start max-md:mt-10 max-md:px-5 bg-neutral-800"
+          className="  text-opacity-50 text-base whitespace-nowrap border self-stretch justify-center mt-14 pl-10 pr-16 py-5 rounded-[1000px] border-solid border-white items-start max-md:mt-10 max-md:px-5 text-white bg-neutral-800"
         />
       </div>
 
       <div className="justify-between bg-neutral-700 self-stretch flex gap-3 mt-7 mb-5 px-20 py-4 rounded-[1000px] items-start max-md:px-5 hover:bg-neutral-900">
-        <button className="text-white text-base grow whitespace-nowrap">
+        <button className="text-white text-base grow whitespace-nowrap" onClick={handleLogin}>
           Login
         </button>
         <img
@@ -35,3 +74,5 @@ export function Login() {
     </div>
   );
 }
+
+export default Login;

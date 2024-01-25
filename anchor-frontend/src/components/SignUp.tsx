@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
 import { useNavigate } from "react-router-dom";
-import OTP from "./Otp";
+import Header from "./Header";
 
 interface SignUpProps {
   // Define your prop types if needed
@@ -13,7 +13,7 @@ interface UserData {
   email: string;
 }
 
-export function SignUp(props: SignUpProps) {
+export default function SignUp(props: SignUpProps) {
   const [formData, setFormData] = useState<UserData>({
     username: "",
     email: "",
@@ -112,6 +112,7 @@ export function SignUp(props: SignUpProps) {
           className="aspect-[1.21] object-contain object-center w-[17px] stroke-[2px] stroke-white overflow-hidden self-stretch shrink-0 max-w-full"
         />
       </div>
+      
     </div>
   );
 }

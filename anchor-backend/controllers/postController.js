@@ -78,13 +78,12 @@ export const createPost = async (req, res) => {
 
 export const getReplyById = async (req, res) => {
   try{
-  //  you have gine comment id in params and you have to find all replies of that comment
-  //  and send only text and username in json response
+  
 
   if (!req.params.id) {
     return res.status(400).json({ error: 'Comment id not provided' });
   }
-  
+
     const comment = await Comment.findById(req.params.id);
     const replies = await Reply.find({ _id: { $in: comment.replies } }).select('text user').populate({
       path: 'user',
@@ -99,6 +98,8 @@ catch(error){
 
   }
 }
+
+
 
 
 

@@ -7,7 +7,8 @@ const router = express.Router();
 router.get('/getAllPosts', postController.getAllPosts);
 router.post('/create-post', postController.createPost);
 router.get('/getpost/:id', postController.getPostById);
-router.get('/getReply/:id', postController.getReplyById);
+router.get('/getReply/:id', postController.getReplyById)
+
 router.post('/add-comment', postController.addComment);
 router.post('/add-reply', postController.addReply);
 
