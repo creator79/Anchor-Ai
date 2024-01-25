@@ -29,9 +29,9 @@ interface PostDetailsProps {
 const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
   const [postData, setPostData] = useState<Post | null>(null);
   const [showCommentInput, setShowCommentInput] = useState<boolean>(false);
-  const [showReplyInput, setShowReplyInput] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [replyCommentId, setReplyCommentId] = useState<string | null>(null);
 
   useEffect(() => {
     // Find the post with the given postId from AllData
@@ -58,13 +58,13 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
     setShowCommentInput(!showCommentInput);
   };
 
-  const toggleReplyInput = () => {
-    setShowReplyInput(!showReplyInput);
-  };
-
-  const handleComment = async () => {
+  const handleComment = async (): Promise<void> => {
     try {
-      const storedID = sessionStorage.getItem("userId");
+      const storedID: string | null = sessionStorage.getItem("userId");
+      if (!storedID) {
+        throw new Error("User ID not found in session storage");
+      }
+
       const response = await fetch("http://localhost:8000/post/add-comment", {
         method: "POST",
         headers: {
@@ -76,41 +76,146 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
           text: commentText,
         }),
       });
+
       if (!response.ok) {
         throw new Error("Failed to add comment");
       }
-  
-      // Reset comment text and close input
+
+      // Reset comment text
       setCommentText("");
-      toggleCommentInput();
-      
+
       // Fetch updated post data after adding comment
-      const updatedPostResponse = await fetch(`http://localhost:8000/post/getpost/${postId}`);
+      const updatedPostResponse = await fetch(
+        `http://localhost:8000/post/getpost/${postId}`
+      );
       if (!updatedPostResponse.ok) {
         throw new Error("Failed to fetch updated post data");
       }
-      const updatedPost = await updatedPostResponse.json();
-      
+      const updatedPost: Post = await updatedPostResponse.json();
+
       // Map comments data to the expected format
-      const commentsData = updatedPost.comments.map(comment => ({
-        _id: comment._id,
-        text: comment.text,
-        username: comment.user.username
-      }));
-  
+      const commentsData: Comment[] = updatedPost.comments.map(
+        (comment: any) => ({
+          _id: comment._id,
+          text: comment.text,
+          username: comment.user.username,
+        })
+      );
+
       // Update the state with the new post data including comments
       setPostData({
         ...updatedPost,
-        comments: commentsData
+        comments: commentsData,
       });
-  
+
       alert("Comment Added");
-    } catch (error) {
+    } catch (error: any) {
       setError(error.message);
     }
   };
-  
-  
+
+  const handleReply = async (commentId: string): Promise<void> => {
+    try {
+      const storedID: string | null = sessionStorage.getItem("userId");
+      if (!storedID) {
+        throw new Error("User ID not found in session storage");
+      }
+
+      const response = await fetch("http://localhost:8000/post/add-reply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          postId,
+          userId: storedID,
+          text: commentText,
+          commentId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add reply");
+      }
+
+      // Reset comment text
+      setCommentText("");
+
+      // Fetch updated post data after adding reply
+      const updatedPostResponse = await fetch(
+        `http://localhost:8000/post/getReply/${commentId}`
+      );
+      if (!updatedPostResponse.ok) {
+        throw new Error("Failed to fetch updated post data");
+      }
+      const updatedPost: Post = await updatedPostResponse.json();
+// this is the response of the above fetch request
+    //   {
+    //     "replies": [
+    //         {
+    //             "_id": "65b160ede9357ab952385940",
+    //             "text": " This is Mansi  Comment 🌈",
+    //             "user": {
+    //                 "_id": "65b15a4bbb4c2713615d2dcd",
+    //                 "username": "Ankush"
+    //             }
+    //         },
+    //         {
+    //             "_id": "65b163c819f75ae27aedab6e",
+    //             "text": " One More Reply for this comment ⚓",
+    //             "user": {
+    //                 "_id": "65b15a4bbb4c2713615d2dcd",
+    //                 "username": "Ankush"
+    //             }
+    //         },
+    //         {
+    //             "_id": "65b163dd19f75ae27aedab75",
+    //             "text": " One More Reply for this comment ✨",
+    //             "user": {
+    //                 "_id": "65b15a4bbb4c2713615d2dcd",
+    //                 "username": "Ankush"
+    //             }
+    //         },
+    //         {
+    //             "_id": "65b23636bae4ace4c3b26f44",
+    //             "text": "",
+    //             "user": {
+    //                 "_id": "65b2130c7c6a561a36ba321a",
+    //                 "username": "Mitali"
+    //             }
+    //         }
+    //     ]
+    // }
+      // Map replies data to the expected format
+      const repliesData: Reply[] = updatedPost.replies.map((reply: any) => ({
+        _id: reply._id,
+        text: reply.text,
+        username: reply.user.username,
+      }));
+
+      // Update the state with the new post data including replies
+      setPostData({
+        ...postData,
+        comments: postData.comments?.map((comment) => {
+          if (comment._id === commentId) {
+            return {
+              ...comment,
+              replies: repliesData,
+            };
+          }
+          return comment;
+        }),
+      });
+
+      // Reset replyCommentId 
+      setReplyCommentId(null);
+      alert("Reply Added");
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+ 
 
   return (
     <div className="justify-end items-stretch bg-stone-950 flex max-w-[554px] flex-col pl-5 pr-3 pt-5 rounded-xl">
@@ -134,29 +239,23 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
           >
             Comments
           </div>
-          <div
-            className="text-white text-opacity-50 text-base font-bold self-stretch mt-4 max-md:max-w-full cursor-pointer hover:text-white"
-            onClick={toggleReplyInput}
-          >
-            Reply
-          </div>
         </div>
 
         {/* Input box for comments */}
         {showCommentInput && (
           <div className="mt-4 max-md:max-w-full flex flex-row ">
-            <input 
-              type="text" 
-              placeholder="Type your comment"  
+            <input
+              type="text"
+              placeholder="Type your comment"
               className="outline-none bg-[#252322] rounded w-full text-white px-2 py-2 mr-2 "
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
             />
-            <img 
-              src={Send} 
-              alt="" 
-              className="w-6 h-6 mt-2 cursor-pointer" 
-              onClick={handleComment} 
+            <img
+              src={Send}
+              alt=""
+              className="w-6 h-6 mt-2 cursor-pointer"
+              onClick={handleComment}
             />
           </div>
         )}
@@ -164,46 +263,52 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
         {/* Error handling */}
         {error && <div className="text-red-500 mt-2">{error}</div>}
 
+    
+
+
         {/* Display comments */}
         {comments.map((comment) => (
-          <div
-            key={comment._id}
-            className="self-stretch flex items-stretch justify-between gap-2.5 mt-6 max-md:max-w-full max-md:flex-wrap"
-          >
-            <div className="text-white text-opacity-50 text-base whitespace-nowrap">{`${comment.username} :`}</div>
-            <div className="text-white text-opacity-50 text-base grow shrink basis-auto">
-              {comment.text}
+          <div key={comment._id} className="ml-2 mt-4">
+            <div className="ml-4">
+              <div className="text-base text-white  text-opacity-50">{`${comment.username} : ${comment.text}`}</div>
+              {/* Display reply button */}
+              <button
+                className="ml-4 mt-2 text-white text-sm underline"
+                onClick={() => setReplyCommentId(comment._id === replyCommentId ? null : comment._id)}
+              >
+                Reply
+              </button>
+              {/* Show reply input box if replyCommentId matches current comment id */}
+              {replyCommentId === comment._id && (
+                <div className="mt-2 ml-8 flex flex-row">
+                  <input
+                    type="text"
+                    placeholder="Type your reply"
+                    className="outline-none bg-[#252322] rounded w-full text-white px-2 py-2 mr-2"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                  />
+                  <img
+                    src={Send}
+                    alt=""
+                    className="w-6 h-6 mt-2 cursor-pointer"
+                    onClick={() => handleReply(comment._id)}
+                  />
+                </div>
+              )}
+              {/* Display replies nested under comments */}
+              {comment.replies && comment.replies.length > 0 && (
+                <div className="ml-8 mt-2">
+                  {comment.replies.map((reply) => (
+                    <div key={reply._id} className="ml-4">
+                      <div className="text-base text-white  text-opacity-50">{`${reply.username} : ${reply.text}`}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         ))}
-
-        {/* Input box for replies */}
-        {showReplyInput && (
-          <div className="mt-4 max-md:max-w-full flex flex-row ">
-            <input type="text" placeholder=" Add Your Reply"  className="outline-none bg-[#252322] rounded w-full text-white px-2 py-2 mr-2 "/>
-            <img src={Send} alt="" className="w-6 h-6 mt-2 cursor-pointer" />
-          </div>
-        )}
-
-        {/* Example replies structure */}
-        {comments.map((comment) =>
-          comment.replies && comment.replies.length > 0 ? (
-            <div
-              key={comment._id}
-              className="self-stretch flex-col  ml-5 flex items-stretch justify-between gap-2.5 mt-3 max-md:max-w-full max-md:flex-wrap"
-            >
-              {comment.replies.map((reply) => (
-                <div
-                  key={reply._id}
-                  className="self-stretch flex gap-5 items-end flex-row"
-                >
-                  <div className="text-white ml-20 text-opacity-50 text-base whitespace-nowrap">{`${reply.username} :`}</div>
-                  <div className="text-white text-opacity-50 text-base self-stretch grow whitespace-nowrap">{`${reply.text}`}</div>
-                </div>
-              ))}
-            </div>
-          ) : null
-        )}
       </div>
     </div>
   );
