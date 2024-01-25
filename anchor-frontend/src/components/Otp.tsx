@@ -3,28 +3,24 @@ import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
 import { useNavigate } from "react-router-dom";
 
-
-
 export default function Otp() {
   const navigate = useNavigate();
   const [otp, setOtp] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [sendingOtp] = useState<boolean>(false); // State to track OTP sending
 
   const handleOtp = async (e: FormEvent) => {
     e.preventDefault();
 
     const email = sessionStorage.getItem("email");
-    // console.log(email, otp);
 
     try {
-      // Validate OTP format (you can add your validation logic here)
       if (!otp) {
         setError("Please enter the OTP");
         return;
       }
 
-      // Make API call to verify OTP
       const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/auth/verify-otp`, {
         method: "POST",
         headers: {
@@ -36,14 +32,10 @@ export default function Otp() {
       const data = await response.json();
 
       if (response.ok) {
-        // OTP verification successful
-        // console.log(data);
         setSuccessMessage("OTP verification successful");
         setError(null);
-        // Perform any further actions after successful verification
         navigate("/accountcreated");
       } else {
-        // OTP verification failed
         setError(data.error || "Invalid OTP");
         setSuccessMessage(null);
       }
@@ -53,6 +45,7 @@ export default function Otp() {
       setSuccessMessage(null);
     }
   };
+
 
   return (
     <div className="bg-white bg-opacity-10 self-center flex w-[387px] max-w-full flex-col items-stretch mt-20 mb-16 px-14 py-12 rounded-xl max-md:my-10 max-md:px-5">
@@ -79,6 +72,7 @@ export default function Otp() {
         className="bg-neutral-800 text-white text-opacity-50 text-base whitespace-nowrap border justify-center mt-7 pl-10 pr-16 py-5 rounded-[1000px] border-solid items-start max-md:px-5"
         value={otp}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setOtp(e.target.value)}
+        disabled={sendingOtp} // Disable input while sending OTP
       />
       {error && <div className="text-red-500 text-sm mt-2 mb-2">{error}</div>}
       {successMessage && <div className="text-green-500 text-sm mt-2 mb-2">{successMessage}</div>}
@@ -86,6 +80,7 @@ export default function Otp() {
         <button className="text-white text-base grow whitespace-nowrap" onClick={handleOtp}>
           Continue
         </button>
+      
         <img
           loading="lazy"
           src={Arrow}

@@ -14,6 +14,7 @@ export default function SignUp() {
     email: "",
   });
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // Add loading state
 
   const navigate = useNavigate();
 
@@ -26,6 +27,7 @@ export default function SignUp() {
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setLoading(true); // Set loading state to true when button is clicked
 
     try {
       const response = await fetch(
@@ -40,17 +42,16 @@ export default function SignUp() {
       );
 
       if (!response.ok) {
-        // Handle non-successful responses here
         const errorMessage = await response.json();
         setError(errorMessage.error || "Failed to create user");
+        setLoading(false); // Reset loading state
         return;
       }
 
-      // If the request was successful, log the response and navigate to the next page
       const responseData = await response.json();
-      // console.log(responseData);
       if (responseData.error) {
         setError(responseData.error);
+        setLoading(false); // Reset loading state
         return;
       }
       setError(null);
@@ -60,12 +61,11 @@ export default function SignUp() {
       sessionStorage.setItem("userId", responseData._id);
       navigate("/otp");
     } catch (error) {
-      // Handle errors here
       console.error("Error:", error as Error);
+      setLoading(false); // Reset loading state
     }
   };
 
-  // console.log(formData.email)
   return (
     <div className="bg-white bg-opacity-10 self-center flex w-[387px] max-w-full flex-col items-center mt-20 mb-16 pl-16 pr-12 py-12 rounded-xl max-md:my-10 max-md:px-5">
       <img
@@ -101,8 +101,9 @@ export default function SignUp() {
         <button
           className="text-white text-base grow whitespace-nowrap"
           onClick={handleClick}
+          disabled={loading} // Disable button when loading
         >
-          Continue
+          {loading ? "Loading..." : "Continue"}
         </button>
         <img
           loading="lazy"
