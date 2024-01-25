@@ -8,7 +8,7 @@ const CreatePost = () => {
 
 
 
-const handlePostSubmit = async (e) => {
+const handlePostSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     
     // Assuming you have a valid user ID stored in localStorage
@@ -39,6 +39,7 @@ const handlePostSubmit = async (e) => {
         // Clear the input fields after successful post
         setTitle("");
         setDesc("");
+        
         
       } else {
         alert("Error creating post");

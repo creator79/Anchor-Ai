@@ -67,7 +67,7 @@ const AllPost: React.FC = () => {
               className="bg-white cursor-pointer bg-opacity-10 flex flex-col mt-3.5 mb-4 pl-8 pr-20 py-7 rounded-xl items-start max-md:max-w-full max-md:px-5"
               onClick={() => handlePostClick(post._id)}
             >
-              <div className="text-white text-opacity-50 text-xl font-bold whitespace-nowrap">
+              <div className="text-white text-opacity-50 text-xl font-bold  ">
                 {post?.title}
               </div>
               <div className="text-white text-opacity-50 text-base whitespace-nowrap mt-6">

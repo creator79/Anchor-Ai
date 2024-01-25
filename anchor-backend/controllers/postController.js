@@ -54,6 +54,42 @@ export const createPost = async (req, res) => {
   }
 };
 
+
+ export const getPostById = async (req, res) => {
+  try{
+    const post = await Post.findById(req.params.id);
+    console.log(post);
+// go with all commments id and find all comments and only send text and user name in json response
+    const comments = await Comment.find({ _id: { $in: post.comments } }).select('text user').populate({
+      path: 'user',
+      select: 'username',
+    });
+    // console.log(comments);
+    res.json({ comments });
+
+
+
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+
+  }
+ }
+
+export const getReplyById = async (req, res) => {
+  try{
+    const reply = await Reply.findById(req.params.id);
+    console.log(reply);
+}
+catch(error){
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+
+  }
+}
+
+
+
 export const addComment = async (req, res) => {
   try {
     const { text, userId, postId } = req.body;
