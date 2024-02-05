@@ -122,7 +122,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
         throw new Error("User ID not found in session storage");
       }
 
-      const response = await fetch(`http://localhost:8000/post/add-reply`, {
+      const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/post/add-reply`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -151,43 +151,6 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
       }
       const updatedPost: Post = await updatedPostResponse.json();
 
-    //   {
-    //     "replies": [
-    //         {
-    //             "_id": "65b160ede9357ab952385940",
-    //             "text": " This is Mansi  Comment 🌈",
-    //             "user": {
-    //                 "_id": "65b15a4bbb4c2713615d2dcd",
-    //                 "username": "Ankush"
-    //             }
-    //         },
-    //         {
-    //             "_id": "65b163c819f75ae27aedab6e",
-    //             "text": " One More Reply for this comment ⚓",
-    //             "user": {
-    //                 "_id": "65b15a4bbb4c2713615d2dcd",
-    //                 "username": "Ankush"
-    //             }
-    //         },
-    //         {
-    //             "_id": "65b163dd19f75ae27aedab75",
-    //             "text": " One More Reply for this comment ✨",
-    //             "user": {
-    //                 "_id": "65b15a4bbb4c2713615d2dcd",
-    //                 "username": "Ankush"
-    //             }
-    //         },
-    //         {
-    //             "_id": "65b23636bae4ace4c3b26f44",
-    //             "text": "",
-    //             "user": {
-    //                 "_id": "65b2130c7c6a561a36ba321a",
-    //                 "username": "Mitali"
-    //             }
-    //         }
-    //     ]
-    // }
-      // Map replies data to the expected format
       const repliesData: Reply[] = (updatedPost.replies ?? []).map((reply: any) => ({
         _id: reply._id,
         text: reply.text,
