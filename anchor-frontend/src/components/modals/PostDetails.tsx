@@ -61,7 +61,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
 
   const handleComment = async (): Promise<void> => {
     try {
-      const storedID: string | null = sessionStorage.getItem("userId");
+      const storedID: string | null = localStorage.getItem("userId");
       if (!storedID) {
         throw new Error("User ID not found in session storage");
       }
@@ -117,7 +117,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
 
   const handleReply = async (commentId: string): Promise<void> => {
     try {
-      const storedID: string | null = sessionStorage.getItem("userId");
+      const storedID: string | null = localStorage.getItem("userId");
       if (!storedID) {
         throw new Error("User ID not found in session storage");
       }

@@ -56,9 +56,9 @@ export default function SignUp() {
       }
       setError(null);
 
-      sessionStorage.setItem("email", formData.email);
-      sessionStorage.setItem("username", formData.username);
-      sessionStorage.setItem("userId", responseData._id);
+      localStorage.setItem("email", formData.email);
+      localStorage.setItem("username", formData.username);
+      localStorage.setItem("userId", responseData._id);
       navigate("/otp");
     } catch (error) {
       console.error("Error:", error as Error);

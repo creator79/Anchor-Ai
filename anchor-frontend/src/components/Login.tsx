@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 const Login: React.FC = ({onLogin}) => {
   const [email, setEmail] = useState<string>(""); // Fixing type issue
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); 
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -29,13 +30,14 @@ const Login: React.FC = ({onLogin}) => {
 
         if (data.success) {
           console.log(data.message);    
-         sessionStorage.setItem("token", "true");
+          localStorage.setItem("token", "true");
          alert("Login Successful");
-          onLogin();
+  
+          setIsAuthenticated(true);
           navigate("/dashboard");
         } else {
           console.error(data.message); // Display error message
-          sessionStorage.setItem("token", "false");
+          localStorage.setItem("token", "false");
         }
       } else {
         console.error("Error:", response.statusText);

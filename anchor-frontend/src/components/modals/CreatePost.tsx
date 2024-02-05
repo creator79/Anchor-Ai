@@ -12,7 +12,7 @@ const handlePostSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     
     // Assuming you have a valid user ID stored in localStorage
-    const storedID = sessionStorage.getItem("userId");
+    const storedID = localStorage.getItem("userId");
     // Check if title and desc are not empty
     if (!title || !desc || !storedID) {
       alert("Please fill in all fields");

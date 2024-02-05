@@ -13,7 +13,7 @@ export default function Otp() {
   const handleOtp = async (e: FormEvent) => {
     e.preventDefault();
 
-    const email = sessionStorage.getItem("email");
+    const email = localStorage.getItem("email");
 
     try {
       if (!otp) {
@@ -62,7 +62,7 @@ export default function Otp() {
         Please verify your email ID to continue. <br />
         We have sent an OTP to this email address: <br />
         <span className="text-white text-opacity-50 text-base font-bold">
-          {sessionStorage.getItem("email")}
+          {localStorage.getItem("email")}
         </span>
       </div>
       <input

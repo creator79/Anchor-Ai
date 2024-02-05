@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import  { useState, useEffect , useLayoutEffect } from "react";
 import Logo from "../assets/image.svg";
 import { useNavigate } from "react-router-dom";
 
@@ -6,20 +6,23 @@ const Header = () => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedUsername = sessionStorage.getItem("username");
-    if (storedUsername && name === "") {
+  useLayoutEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if ( storedUsername && name === "" ) {
       setName(storedUsername);
+      console.log(storedUsername);
     }
   }, [name]);
 
+  
+
   const handleLogout = () => {
     // Clear session storage and reset name
-    sessionStorage.removeItem("username");
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("email");
-    window.location.reload();
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
     setName("");
+    navigate("/");
   };
 
   return (

@@ -54,6 +54,7 @@ const AllPost: React.FC = () => {
   const handleBackToAllPosts = () => {
     setSelectedPostId(null);
     setShowAllPosts(true);
+
   };
 
   return (
@@ -65,7 +66,7 @@ const AllPost: React.FC = () => {
           }`}
         >
           <div className="text-white text-xl font-bold max-md:max-w-full flex flex-wrap shrink-1">
-            All Post ({loading ? "Loading..." : posts.length})
+            All Post ({loading ? "Loading..." : posts.length} )
           </div>
           {posts.map((post) => (
             <div
