@@ -138,6 +138,35 @@ export const addComment = async (req, res) => {
   }
 };
 
+// export const addReply = async (req, res) => {
+//   try {
+//     const { text, userId, commentId } = req.body;
+
+//     const reply = new Reply({
+//       text,
+//       user: userId,
+//     });
+
+//     await reply.save();
+
+//     const comment = await Comment.findById(commentId);
+//     // console.log(comment);
+//     comment.replies.push(reply);
+//     await comment.save();
+
+//     reply.username = (await User.findById(userId)).username;
+//     await reply.save();
+
+//     const originalCommentUser = await User.findById(comment.user);
+//     sendEmail(originalCommentUser.email, `${reply.username} replied to your comment "${comment.text}"`);
+
+//     res.status(201).json({ message: 'Reply added successfully' });
+// } catch (error) {
+//   console.error(error);
+//   res.status(500).json({ error: 'Internal Server Error' });
+// }
+// };
+
 export const addReply = async (req, res) => {
   try {
     const { text, userId, commentId } = req.body;
@@ -150,18 +179,25 @@ export const addReply = async (req, res) => {
     await reply.save();
 
     const comment = await Comment.findById(commentId);
+    const originalPost = await Post.findById(comment.post); // Assuming there's a Post model and 'post' field in Comment model
+    const originalCommentUser = await User.findById(comment.user);
+    
     comment.replies.push(reply);
     await comment.save();
 
     reply.username = (await User.findById(userId)).username;
     await reply.save();
 
-    const originalCommentUser = await User.findById(comment.user);
+    // Send email to original commenter
     sendEmail(originalCommentUser.email, `${reply.username} replied to your comment "${comment.text}"`);
 
+    // Send email to original post creator
+    const originalPostCreator = await User.findById(originalPost.creator);
+    sendEmail(originalPostCreator.email, `${reply.username} replied to a comment on your post "${originalPost.title}"`);
+
     res.status(201).json({ message: 'Reply added successfully' });
-} catch (error) {
-  console.error(error);
-  res.status(500).json({ error: 'Internal Server Error' });
-}
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };

@@ -21,12 +21,12 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="signup" element={<Signup />} />
+      <Route path="otp" element={<Otp />} />
+      <Route path="accountcreated" element={<AccountCreated />} />
       <Route path="login" element={<Login />} />
+      <Route path="/" element={<Home />} />
       <Route path="/" element={<Protected />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/otp" element={<Otp />} />
-        <Route path="/accountcreated" element={<AccountCreated />} />
-        <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="dashboard" element={<DashBoard />} />
         <Route path="*" element={<Error />} />r
       </Route>
     </Route>
