@@ -1,4 +1,4 @@
-import  { useState, useEffect , useLayoutEffect } from "react";
+import  { useState , useLayoutEffect } from "react";
 import Logo from "../assets/image.svg";
 import { useNavigate } from "react-router-dom";
 
