@@ -11,11 +11,11 @@ import { useNavigate } from "react-router-dom";
 const Login: React.FC = ({onLogin}) => {
   const [email, setEmail] = useState<string>(""); // Fixing type issue
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); 
+  const [Loading , setLoading] = useState<boolean>(false); 
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/auth/login`, {
         method: "POST",
@@ -32,18 +32,19 @@ const Login: React.FC = ({onLogin}) => {
           console.log(data.message);    
           localStorage.setItem("token", "true");
          alert("Login Successful");
-  
-          setIsAuthenticated(true);
           navigate("/dashboard");
         } else {
           console.error(data.message); // Display error message
+          setLoading(false);
           localStorage.setItem("token", "false");
         }
       } else {
         console.error("Error:", response.statusText);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error:", (error as Error).message);
+      setLoading(false);
     }
   };
 
@@ -69,8 +70,12 @@ const Login: React.FC = ({onLogin}) => {
       </div>
 
       <div className="justify-between bg-neutral-700 self-stretch flex gap-3 mt-7 mb-5 px-20 py-4 rounded-[1000px] items-start max-md:px-5 hover:bg-neutral-900">
-        <button className="text-white text-base grow whitespace-nowrap" onClick={handleLogin}>
-          Login
+        <button className="text-white text-base grow whitespace-nowrap" 
+        
+        onClick={handleLogin}
+        disabled={Loading}
+        >
+        {Loading ? "Loading..." : "Login"}
         </button>
         <img
           loading="lazy"
