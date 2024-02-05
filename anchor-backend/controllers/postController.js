@@ -36,6 +36,21 @@ export const createPost = async (req, res) => {
   try {
     const { title, desc, userId } = req.body;
 
+       // Regular expressions to match special characters and emojis
+       const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>[\]\\]/g;
+       const emojiRegex = /[\u{1F600}-\u{1F6FF}|[\u{1F300}-\u{1F5FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}\u{2700}-\u{27BF}]]/gu;
+   
+       // Check if title contains only plain text
+       if (specialCharsRegex.test(title) || emojiRegex.test(title)) {
+         return res.status(400).json({ message: 'Title should only contain plain text.' });
+       }
+   
+       // Check if description contains only plain text
+       if (specialCharsRegex.test(desc) || emojiRegex.test(desc)) {
+         return res.status(400).json({ message: 'Description should only contain plain text.' });
+       }
+   
+
     const post = new Post({
       title,
       desc,
@@ -47,6 +62,8 @@ export const createPost = async (req, res) => {
     if (!userId || userId === "" || description === "" || title === "") {
       return res.status(400).json({ error: "Enter the details Correctly" });
     }
+
+
     await post.save();
 
     const user = await User.findById(userId);
@@ -107,6 +124,14 @@ export const addComment = async (req, res) => {
       return res.status(400).json({ error: "Enter the details Correctly" });
     }
 
+    const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>[\]\\]/g;
+    const emojiRegex = /[\u{1F600}-\u{1F6FF}|[\u{1F300}-\u{1F5FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}\u{2700}-\u{27BF}]]/gu;
+
+    // Check if title contains only plain text
+    if (specialCharsRegex.test(text) || emojiRegex.test(text)) {
+      return res.status(400).json({ message: 'Comment should only contain plain text.' });
+    }
+
 
     const comment = new Comment({
       text,
@@ -147,6 +172,13 @@ export const addReply = async (req, res) => {
     const { text, userId, commentId } = req.body;
     if (!text || text === "" || !userId || userId === "" || !commentId || commentId === "") {
       return res.status(400).json({ error: "Enter the details Correctly" });
+    }
+    const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>[\]\\]/g;
+    const emojiRegex = /[\u{1F600}-\u{1F6FF}|[\u{1F300}-\u{1F5FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}\u{2700}-\u{27BF}]]/gu;
+
+    // Check if title contains only plain text
+    if (specialCharsRegex.test(text) || emojiRegex.test(text)) {
+      return res.status(400).json({ message: 'Comment should only contain plain text.' });
     }
 
     const reply = new Reply({
