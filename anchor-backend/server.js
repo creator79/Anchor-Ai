@@ -21,6 +21,12 @@ app.use('/post', postRoutes);
 
 // Other middleware and routes
 
+// show server is running in browser
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
