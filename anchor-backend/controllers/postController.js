@@ -42,6 +42,11 @@ export const createPost = async (req, res) => {
       user: userId,
     });
 
+    // check if user exists and not empty
+  
+    if (!userId || userId === "" || description === "" || title === "") {
+      return res.status(400).json({ error: "Enter the details Correctly" });
+    }
     await post.save();
 
     const user = await User.findById(userId);
@@ -94,8 +99,14 @@ export const getReplyById = async (req, res) => {
 };
 
 export const addComment = async (req, res) => {
+  
   try {
     const { text, userId, postId } = req.body;
+
+    if (!text || text === "" || !userId || userId === "" || !postId || postId === "") {
+      return res.status(400).json({ error: "Enter the details Correctly" });
+    }
+
 
     const comment = new Comment({
       text,
@@ -134,6 +145,9 @@ export const addComment = async (req, res) => {
 export const addReply = async (req, res) => {
   try {
     const { text, userId, commentId } = req.body;
+    if (!text || text === "" || !userId || userId === "" || !commentId || commentId === "") {
+      return res.status(400).json({ error: "Enter the details Correctly" });
+    }
 
     const reply = new Reply({
       text,
@@ -144,7 +158,7 @@ export const addReply = async (req, res) => {
     await reply.save();
 
     // find post creator and send email
-    //     comment id --> post collection --> comments array check karunga same comment id ---> find user id of that post --->  user collection  --->match id
+    //     comment id --> post collection --> comments array check  same comment id ---> find user id of that post --->  user collection  --->match id
     // -----> find email of that id and send email to that original user
 
     const post = await Post.findOne({ comments: commentId });
