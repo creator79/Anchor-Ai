@@ -42,7 +42,9 @@ const handlePostSubmit = async (e: { preventDefault: () => void; }) => {
         
         
       } else {
-        alert("Error creating post");
+        // Display an error message if the request was not successful
+        const data = await response.json();
+        alert(data.message);
       }
     } catch (error) {
       console.error("Error creating post:", error);

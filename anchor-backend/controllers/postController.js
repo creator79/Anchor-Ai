@@ -178,7 +178,7 @@ export const addReply = async (req, res) => {
 
     // Check if title contains only plain text
     if (specialCharsRegex.test(text) || emojiRegex.test(text)) {
-      return res.status(400).json({ message: 'Comment should only contain plain text.' });
+      return res.status(400).json({ message: 'Reply should only contain plain text.' });
     }
 
     const reply = new Reply({

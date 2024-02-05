@@ -31,6 +31,7 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
   const [postData, setPostData] = useState<Post | null>(null);
   const [showCommentInput, setShowCommentInput] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>("");
+  const [replyText, setReplyText] = useState<string>(""); // New state for reply text
   const [error, setError] = useState<string | null>(null);
   const [replyCommentId, setReplyCommentId] = useState<string | null>(null);
 
@@ -66,20 +67,25 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
         throw new Error("User ID not found in session storage");
       }
 
-      const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/post/add-comment`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          postId,
-          userId: storedID,
-          text: commentText,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_PORT_NAME}/post/add-comment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            postId,
+            userId: storedID,
+            text: commentText,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Failed to add comment");
+        const errorData = await response.json();
+        setError(errorData.message);
+        throw new Error(errorData.message);
       }
 
       // Reset comment text
@@ -115,48 +121,135 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
     }
   };
 
+
+  //   try {
+  //     const storedID: string | null = localStorage.getItem("userId");
+  //     if (!storedID) {
+  //       throw new Error("User ID not found in session storage");
+  //     }
+
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_PORT_NAME}/post/add-reply`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           postId,
+  //           userId: storedID,
+  //           text: commentText,
+  //           commentId: commentId,
+  //         }),
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       setError(errorData.message);
+  //       throw new Error(errorData.message);
+  //     }
+
+  //     setReplyText("");
+  //     // Reset replyCommentId
+  //     setReplyCommentId(null);
+
+  //     // Fetch updated post data after adding reply
+  //     const updatedPostResponse = await fetch(
+  //       `${import.meta.env.VITE_PORT_NAME}/post/getReply/${commentId}`
+  //     );
+  //     if (!updatedPostResponse.ok) {
+  //       const errorData = await response.json();
+  //       setError(errorData.message);
+  //       throw new Error(errorData.message);
+  //     }
+  //     const updatedPost: Post = await updatedPostResponse.json();
+
+  //     const repliesData: Reply[] = (updatedPost.replies ?? []).map(
+  //       (reply: any) => ({
+  //         _id: reply._id,
+  //         text: reply.text,
+  //         username: reply.user.username,
+  //       })
+  //     );
+
+  //     // Update the state with the new post data including replies
+  //     setPostData({
+  //       ...postData,
+  //       comments: postData.comments?.map((comment) => {
+  //         if (comment._id === commentId) {
+  //           return {
+  //             ...comment,
+  //             replies: repliesData,
+  //           };
+  //         }
+  //         return comment;
+  //       }),
+  //     });
+
+  //     // Reset replyCommentId
+  //     setReplyCommentId(null);
+  //     alert("Reply Added");
+  //   } catch (error: any) {
+  //     setError(error.message);
+  //   }
+  // };
+
   const handleReply = async (commentId: string): Promise<void> => {
     try {
       const storedID: string | null = localStorage.getItem("userId");
       if (!storedID) {
         throw new Error("User ID not found in session storage");
       }
-
-      const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/post/add-reply`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          postId,
-          userId: storedID,
-          text: commentText,
-          commentId: commentId,
-        }),
-      });
-
+  
+      const response = await fetch(
+        `${import.meta.env.VITE_PORT_NAME}/post/add-reply`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            postId,
+            userId: storedID,
+            text: replyText, // Using replyText state for the reply text
+            commentId: commentId,
+          }),
+        }
+      );
+  
       if (!response.ok) {
-        throw new Error("Failed to add reply");
+        const errorData = await response.json();
+        setError(errorData.message);
+        
+        throw new Error(errorData.message);
+       
       }
-
-      // Reset comment text
-      setCommentText("");
-
+  
+      // Reset reply text
+      setReplyText("");
+      // Reset replyCommentId
+      setReplyCommentId(null);
+  
       // Fetch updated post data after adding reply
       const updatedPostResponse = await fetch(
         `${import.meta.env.VITE_PORT_NAME}/post/getReply/${commentId}`
       );
       if (!updatedPostResponse.ok) {
-        throw new Error("Failed to fetch updated post data");
+        const errorData = await response.json();
+        setError(errorData.message);
+        throw new Error(errorData.message);
       }
       const updatedPost: Post = await updatedPostResponse.json();
-
-      const repliesData: Reply[] = (updatedPost.replies ?? []).map((reply: any) => ({
-        _id: reply._id,
-        text: reply.text,
-        username: reply.user.username,
-      }));
-
+  
+      const repliesData: Reply[] = (updatedPost.replies ?? []).map(
+        (reply: any) => ({
+          _id: reply._id,
+          text: reply.text,
+          username: reply.user.username,
+        })
+      );
+  
       // Update the state with the new post data including replies
       setPostData({
         ...postData,
@@ -170,16 +263,13 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
           return comment;
         }),
       });
-
-      // Reset replyCommentId 
-      setReplyCommentId(null);
+  
       alert("Reply Added");
     } catch (error: any) {
       setError(error.message);
     }
   };
-
- 
+  
 
   return (
     <div className="justify-end items-stretch bg-stone-950 flex max-w-[554px] flex-col pl-5 pr-3 pt-5 rounded-xl">
@@ -227,9 +317,6 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
         {/* Error handling */}
         {error && <div className="text-red-500 mt-2">{error}</div>}
 
-    
-
-
         {/* Display comments */}
         {comments.map((comment) => (
           <div key={comment._id} className="ml-2 mt-4">
@@ -238,7 +325,11 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
               {/* Display reply button */}
               <button
                 className="ml-4 mt-2 text-white text-sm underline"
-                onClick={() => setReplyCommentId(comment._id === replyCommentId ? null : comment._id)}
+                onClick={() =>
+                  setReplyCommentId(
+                    comment._id === replyCommentId ? null : comment._id
+                  )
+                }
               >
                 Reply
               </button>
@@ -249,8 +340,8 @@ const PostDetails: React.FC<PostDetailsProps> = ({ AllData, postId }) => {
                     type="text"
                     placeholder="Type your reply"
                     className="outline-none bg-[#252322] rounded w-full text-white px-2 py-2 mr-2"
-                    value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
                   />
                   <img
                     src={Send}
