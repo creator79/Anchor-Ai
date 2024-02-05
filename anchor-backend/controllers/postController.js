@@ -136,7 +136,6 @@ export const addComment = async (req, res) => {
     const comment = new Comment({
       text,
       user: userId,
-      username: "",
     });
 
     await comment.save();
