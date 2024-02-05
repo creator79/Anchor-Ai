@@ -38,7 +38,7 @@ export const createPost = async (req, res) => {
 
        // Regular expressions to match special characters and emojis
        const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>[\]\\]/g;
-       const emojiRegex = /[\u{1F600}-\u{1F6FF}|[\u{1F300}-\u{1F5FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}\u{2700}-\u{27BF}]]/gu;
+      const emojiRegex = /[\u{1F600}-\u{1F6FF}\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
    
        // Check if title contains only plain text
        if (specialCharsRegex.test(title) || emojiRegex.test(title)) {
@@ -125,7 +125,7 @@ export const addComment = async (req, res) => {
     }
 
     const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>[\]\\]/g;
-    const emojiRegex = /[\u{1F600}-\u{1F6FF}|[\u{1F300}-\u{1F5FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}\u{2700}-\u{27BF}]]/gu;
+   const emojiRegex = /[\u{1F600}-\u{1F6FF}\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
 
     // Check if title contains only plain text
     if (specialCharsRegex.test(text) || emojiRegex.test(text)) {
@@ -174,7 +174,7 @@ export const addReply = async (req, res) => {
       return res.status(400).json({ error: "Enter the details Correctly" });
     }
     const specialCharsRegex = /[!@#$%^&*(),.?":{}|<>[\]\\]/g;
-    const emojiRegex = /[\u{1F600}-\u{1F6FF}|[\u{1F300}-\u{1F5FF}]|[\u{1F900}-\u{1F9FF}]|[\u{2600}-\u{26FF}\u{2700}-\u{27BF}]]/gu;
+   const emojiRegex = /[\u{1F600}-\u{1F6FF}\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
 
     // Check if title contains only plain text
     if (specialCharsRegex.test(text) || emojiRegex.test(text)) {
