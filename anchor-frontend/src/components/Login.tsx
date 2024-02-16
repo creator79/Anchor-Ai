@@ -3,35 +3,46 @@
 /* eslint-disable */
 // disable typescript for this file
 //@ts-nocheck
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useEffect } from "react";
 import Rocket from "../assets/Rocket.svg";
 import Arrow from "../assets/Arrow.svg";
 import { useNavigate } from "react-router-dom";
+import Header from "./Header";
 
-const Login: React.FC = ({onLogin}) => {
-  const [email, setEmail] = useState<string>(""); // Fixing type issue
+const Login: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
   const navigate = useNavigate();
-  const [Loading , setLoading] = useState<boolean>(false); 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    console.log("User:", user); // Log the updated user state
+  }, [user]);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email })
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_PORT_NAME}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
 
         if (data.success) {
-          console.log(data.message);    
+          // console.log(data.message);
           localStorage.setItem("token", "true");
-         alert("Login Successful");
+          localStorage.setItem("username", data.message.username);
+          alert("Login Successful");
+          // setUser(data.message.username);
           navigate("/dashboard");
         } else {
           console.error(data.message); // Display error message
@@ -62,20 +73,20 @@ const Login: React.FC = ({onLogin}) => {
         <input
           type="text"
           placeholder="Enter Your Email"
-          value={email} // Fixing where email is set from UI
-          onChange={(e) => setEmail(e.target.value)} // Fixing types and eslint issues
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={{ color: "white" }}
           className="  text-opacity-50 text-base whitespace-nowrap border self-stretch justify-center mt-14 pl-10 pr-16 py-5 rounded-[1000px] border-solid border-white items-start max-md:mt-10 max-md:px-5 text-white bg-neutral-800"
         />
       </div>
 
       <div className="justify-between bg-neutral-700 self-stretch flex gap-3 mt-7 mb-5 px-20 py-4 rounded-[1000px] items-start max-md:px-5 hover:bg-neutral-900">
-        <button className="text-white text-base grow whitespace-nowrap" 
-        
-        onClick={handleLogin}
-        disabled={Loading}
+        <button
+          className="text-white text-base grow whitespace-nowrap"
+          onClick={handleLogin}
+          disabled={loading}
         >
-        {Loading ? "Loading..." : "Login"}
+          {loading ? "Loading..." : "Login"}
         </button>
         <img
           loading="lazy"
@@ -83,8 +94,9 @@ const Login: React.FC = ({onLogin}) => {
           className="aspect-[1.21] object-contain object-center w-[17px] stroke-[2px] stroke-white overflow-hidden self-stretch shrink-0 max-w-full"
         />
       </div>
+     
     </div>
   );
-}
+};
 
 export default Login;

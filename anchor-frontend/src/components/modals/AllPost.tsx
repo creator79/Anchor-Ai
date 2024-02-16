@@ -15,10 +15,9 @@ interface Post {
   _id: string;
   id: number;
   title: string;
-  desc: string; 
+  desc: string;
   comments?: Comment[];
   replies?: Comment[];
-  
 }
 
 const AllPost: React.FC = () => {
@@ -30,7 +29,9 @@ const AllPost: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_PORT_NAME}/post/getAllPosts`);
+        const response = await fetch(
+          `${import.meta.env.VITE_PORT_NAME}/post/getAllPosts`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch posts");
         }
@@ -54,11 +55,10 @@ const AllPost: React.FC = () => {
   const handleBackToAllPosts = () => {
     setSelectedPostId(null);
     setShowAllPosts(true);
-
   };
 
   return (
-    <div className="flex flex-col items-stretch w-[65%] ml-5 max-md:w-full max-md:ml-0 flex-wrap ">
+    <div className="flex flex-col items-stretch w-full max-w-[65%] ml-5 max-md:w-full max-md:ml-0 flex-wrap ">
       {showAllPosts && (
         <div
           className={`bg-stone-950 flex grow flex-col items-stretch w-full pl-5 pr-3 pt-5 pb-12 rounded-xl max-md:max-w-full max-md:mt-10  ${
@@ -99,12 +99,16 @@ const AllPost: React.FC = () => {
         <PostDetails postId={selectedPostId} AllData={posts} />
       )}
       {!showAllPosts && (
-        <button
-          onClick={handleBackToAllPosts}
-          className="text-white mt-10  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-[#252322] dark:hover:bg-[#0F172A] dark:focus:ring-gray-700 dark:border-gray-700"
-        >
-          Back to All Posts
-        </button>
+        <div className="flex justify-center mt-5 md:mt-10 ml-[-20rem]">
+          <div style={{ maxWidth: "35rem" }}>
+            <button
+              onClick={handleBackToAllPosts}
+              className="text-white font-medium rounded-lg text-sm px-4 py-2.5 md:px-5 md:py-2.5 me-2 mb-2 md:mb-2 dark:bg-[#252322] dark:hover:bg-[#0F172A] dark:focus:ring-gray-700 dark:border-gray-700 w-full"
+            >
+              Back to All Posts
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

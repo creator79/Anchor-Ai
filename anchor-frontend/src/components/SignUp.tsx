@@ -27,7 +27,9 @@ export default function SignUp() {
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setLoading(true); // Set loading state to true when button is clicked
+    setLoading(true); 
+    console.log("Form Data:", formData);
+    console.log(import.meta.env.VITE_PORT_NAME)
 
     try {
       const response = await fetch(

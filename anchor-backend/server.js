@@ -18,6 +18,7 @@ connectToDatabase();
 
 app.use('/auth', authRoutes);
 app.use('/post', postRoutes);
+app.use(bodyParser.json());
 
 // Other middleware and routes
 
@@ -28,5 +29,5 @@ app.get('/', (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`✨ Server is running on port ${PORT} ✨`);
 });

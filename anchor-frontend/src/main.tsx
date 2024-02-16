@@ -6,6 +6,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
   Route,
+  Router,
 } from "react-router-dom";
 import Protected from "./components/Protected";
 import Signup from "./components/SignUp";
@@ -15,6 +16,7 @@ import Error from "./components/Error";
 import Otp from "./components/Otp";
 import AccountCreated from "./components/AccountCreated";
 import DashBoard from "./components/Dashboard";
+import Header from "./components/Header";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +25,7 @@ const router = createBrowserRouter(
       <Route path="otp" element={<Otp />} />
       <Route path="accountcreated" element={<AccountCreated />} />
       <Route path="login" element={<Login />} />
+      <Route path="header" element={<Header />} />
       <Route path="/" element={<Home />} />
       <Route path="/" element={<Protected />}>
         <Route path="dashboard" element={<DashBoard />} />

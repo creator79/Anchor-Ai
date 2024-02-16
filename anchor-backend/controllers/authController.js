@@ -57,7 +57,12 @@ export const login = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Email not found' });
     }
 
-    return res.status(200).json({ success: true, message: 'Email found' });
+    return res.status(200).json({ success: true, message: {
+      username: userExists.username,
+      email: userExists.email,
+      
+    } 
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Internal Server Error' });
